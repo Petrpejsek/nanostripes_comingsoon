@@ -95,14 +95,14 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-center p-8">
       <div className="w-full max-w-4xl space-y-16 text-center">
         {/* Logo */}
-        <div className="relative mx-auto h-40 w-[400px]">
+        <div className="mx-auto mb-8">
           <Image
             src="/logo.png"
             alt="Nanostripes Logo"
-            fill
-            style={{ objectFit: 'contain' }}
+            width={400}
+            height={148}
             priority
-            sizes="(max-width: 400px) 100vw, 400px"
+            className="mx-auto"
           />
         </div>
 
