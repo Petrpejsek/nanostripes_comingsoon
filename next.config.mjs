@@ -8,6 +8,7 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
+    domains: ['localhost'],
   },
   experimental: {
     typedRoutes: false,
@@ -35,6 +36,8 @@ const nextConfig = {
     });
     return config;
   },
+  distDir: '.next',
+  generateBuildId: () => 'build',
 }
 
 export default nextConfig; 
