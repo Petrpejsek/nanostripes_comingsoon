@@ -44,13 +44,20 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      const emails = JSON.parse(localStorage.getItem('subscribedEmails') || '[]');
-      if (emails.includes(email)) {
-        throw new Error('Email je již zaregistrován');
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Došlo k neočekávané chybě');
       }
-      emails.push(email);
-      localStorage.setItem('subscribedEmails', JSON.stringify(emails));
-      
+
       setSubmitted(true);
       setEmail('');
     } catch (error) {
