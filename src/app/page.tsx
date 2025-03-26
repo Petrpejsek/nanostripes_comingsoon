@@ -44,28 +44,25 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/subscribe', {
+      const response = await fetch('https://yhhmhqjkqisqefhxprsr.supabase.co/rest/v1/subscriber', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InloaG1ocWprcWlzcWVmaHhwcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwMDYwMjcsImV4cCI6MjA1ODU4MjAyN30.CYMpY-jyrJ26eTdyU-_xQ34qNqGyiSK2CuQ-m3TPk3I',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InloaG1ocWprcWlzcWVmaHhwcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwMDYwMjcsImV4cCI6MjA1ODU4MjAyN30.CYMpY-jyrJ26eTdyU-_xQ34qNqGyiSK2CuQ-m3TPk3I',
+          'Prefer': 'return=minimal'
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email })
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || 'Došlo k neočekávané chybě');
+        throw new Error('Něco se pokazilo');
       }
 
       setSubmitted(true);
       setEmail('');
     } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError('Došlo k neočekávané chybě');
-      }
+      console.error('Error:', error);
     } finally {
       setIsLoading(false);
     }
