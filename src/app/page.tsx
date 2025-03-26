@@ -96,13 +96,10 @@ export default function Home() {
       <div className="w-full max-w-4xl space-y-16 text-center">
         {/* Logo */}
         <div className="mx-auto mb-8">
-          <Image
+          <img
             src="/logo.png"
             alt="Nanostripes Logo"
-            width={400}
-            height={148}
-            priority
-            className="mx-auto"
+            className="mx-auto h-auto w-[400px]"
           />
         </div>
 
