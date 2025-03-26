@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface PrismaError {
   code: string;
   [key: string]: unknown;
@@ -19,9 +23,6 @@ interface SubscribeResponse {
     createdAt: string;
   };
 }
-
-// Tato funkce se volá během buildu a říká Next.js, že tato routa je dynamická
-export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request): Promise<NextResponse<SubscribeResponse>> {
   try {
