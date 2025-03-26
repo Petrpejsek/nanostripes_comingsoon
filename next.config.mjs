@@ -1,14 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  output: 'standalone',
   images: {
     unoptimized: true,
     domains: ['localhost'],
+  },
+  typescript: {
+    ignoreBuildErrors: true
+  },
+  eslint: {
+    ignoreDuringBuilds: true
   },
   experimental: {
     typedRoutes: false,
@@ -16,7 +17,6 @@ const nextConfig = {
   swcMinify: true,
   poweredByHeader: false,
   reactStrictMode: false,
-  output: 'standalone',
   trailingSlash: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
