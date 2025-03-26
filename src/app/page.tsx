@@ -1,6 +1,5 @@
 'use client';
 
-import Image from "next/image";
 import Countdown from 'react-countdown';
 import { useState, useEffect } from 'react';
 
@@ -44,25 +43,15 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://yhhmhqjkqisqefhxprsr.supabase.co/rest/v1/subscriber', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InloaG1ocWprcWlzcWVmaHhwcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwMDYwMjcsImV4cCI6MjA1ODU4MjAyN30.CYMpY-jyrJ26eTdyU-_xQ34qNqGyiSK2CuQ-m3TPk3I',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InloaG1ocWprcWlzcWVmaHhwcnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwMDYwMjcsImV4cCI6MjA1ODU4MjAyN30.CYMpY-jyrJ26eTdyU-_xQ34qNqGyiSK2CuQ-m3TPk3I',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({ email })
-      });
-
-      if (!response.ok) {
-        throw new Error('Něco se pokazilo');
-      }
+      const emails = JSON.parse(localStorage.getItem('subscribedEmails') || '[]');
+      emails.push(email);
+      localStorage.setItem('subscribedEmails', JSON.stringify(emails));
 
       setSubmitted(true);
       setEmail('');
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Chyba:', error);
+      setError('Něco se pokazilo');
     } finally {
       setIsLoading(false);
     }
