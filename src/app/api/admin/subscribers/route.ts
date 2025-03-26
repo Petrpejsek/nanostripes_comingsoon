@@ -3,6 +3,8 @@ import prisma from '@/lib/db';
 import { cookies } from 'next/headers';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 
+export const dynamic = 'force-dynamic';
+
 interface Subscriber {
   id: number;
   email: string;

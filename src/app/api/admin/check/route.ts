@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const cookieStore = cookies() as ReadonlyRequestCookies;
   const adminSession = cookieStore.get('admin_session')?.value;

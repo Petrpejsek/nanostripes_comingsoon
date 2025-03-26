@@ -20,6 +20,9 @@ interface SubscribeResponse {
   };
 }
 
+// Tato funkce se volá během buildu a říká Next.js, že tato routa je dynamická
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request): Promise<NextResponse<SubscribeResponse>> {
   try {
     const { email } = await request.json() as SubscribeRequest;
