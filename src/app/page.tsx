@@ -126,7 +126,7 @@ export default function Home() {
         {/* Email formulář */}
         <div className="mx-auto max-w-md space-y-4">
           {submitted ? (
-            <p className="text-green-600 text-xl">Thank you for subscribing!</p>
+            <p className="text-green-600 text-xl">Boom! You're in. We'll be in touch soon.</p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
