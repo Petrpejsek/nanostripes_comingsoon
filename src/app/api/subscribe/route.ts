@@ -1,32 +1,62 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 
-export async function POST(request: Request) {
-  try {
-    const { email } = await request.json();
+interface PrismaError {
+  code: string;
+  [key: string]: unknown;
+}
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      );
+interface SubscribeRequest {
+  email: string;
+}
+
+interface SubscribeResponse {
+  success: boolean;
+  error?: string;
+  subscriber?: {
+    id: number;
+    email: string;
+    createdAt: string;
+  };
+}
+
+export async function POST(request: Request): Promise<NextResponse<SubscribeResponse>> {
+  try {
+    const { email } = await request.json() as SubscribeRequest;
+
+    if (!email || !email.includes('@')) {
+      return NextResponse.json({ success: false, error: 'Invalid email' }, { status: 400 });
     }
 
     const subscriber = await prisma.subscriber.create({
-      data: { email },
+      data: { email }
     });
 
-    return NextResponse.json({ success: true, subscriber });
-  } catch (error: any) {
-    if (error.code === 'P2002') {
-      return NextResponse.json(
-        { error: 'Email already exists' },
-        { status: 400 }
-      );
+    return NextResponse.json({ 
+      success: true,
+      subscriber: {
+        ...subscriber,
+        createdAt: subscriber.createdAt.toISOString()
+      }
+    });
+  } catch (error) {
+    if (isPrismaError(error) && error.code === 'P2002') {
+      return NextResponse.json({ success: false, error: 'Email already exists' }, { status: 400 });
     }
-    return NextResponse.json(
-      { error: 'Something went wrong' },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      console.error('Subscribe error:', error.message);
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    }
+    console.error('Subscribe error:', error);
+    return NextResponse.json({ success: false, error: 'Something went wrong' }, { status: 500 });
   }
+}
+
+function isPrismaError(error: unknown): error is PrismaError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    typeof (error as PrismaError).code === 'string'
+  );
 } 

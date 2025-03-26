@@ -5,27 +5,26 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "netlify-build": "NODE_ENV=production SKIP_LINTING=true SKIP_TYPE_CHECK=true next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@netlify/plugin-nextjs": "^4.41.3",
     "@prisma/client": "^6.5.0",
     "bcryptjs": "^3.0.2",
-    "next": "15.2.4",
+    "next": "14.0.4",
     "prisma": "^6.5.0",
-    "react": "^19.0.0",
+    "react": "^18",
     "react-countdown": "^2.3.6",
-    "react-dom": "^19.0.0"
+    "react-dom": "^18"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.2.4",
-    "tailwindcss": "^4",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4",
     "typescript": "^5"
   }
 }

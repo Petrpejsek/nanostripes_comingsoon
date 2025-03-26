@@ -4,15 +4,32 @@ import Image from "next/image";
 import Countdown from 'react-countdown';
 import { useState, useEffect } from 'react';
 
+interface CountdownProps {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  completed: boolean;
+}
+
+interface ApiResponse {
+  success: boolean;
+  error?: string;
+  subscriber?: {
+    id: number;
+    email: string;
+    createdAt: string;
+  };
+}
+
 export default function Home() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [launchDate, setLaunchDate] = useState<Date>(new Date());
-  const [key, setKey] = useState(0); // Přidáváme key pro vynucení překreslení
+  const [key, setKey] = useState(0);
 
-  // Nastavení data spuštění při prvním načtení
   useEffect(() => {
     const savedDate = localStorage.getItem('launchDate');
     if (savedDate) {
@@ -24,7 +41,6 @@ export default function Home() {
       setLaunchDate(newDate);
     }
 
-    // Aktualizace každou sekundu
     const interval = setInterval(() => {
       setKey(prev => prev + 1);
     }, 1000);
@@ -46,7 +62,7 @@ export default function Home() {
         body: JSON.stringify({ email }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as ApiResponse;
 
       if (!response.ok) {
         throw new Error(data.error || 'Something went wrong');
@@ -54,15 +70,19 @@ export default function Home() {
 
       setSubmitted(true);
       setEmail('');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        console.error('Subscribe form error:', error);
+        setError('An unexpected error occurred');
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Komponenta pro zobrazení odpočtu
-  const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
+  const renderer = ({ days, hours, minutes, seconds, completed }: CountdownProps) => {
     if (completed) {
       return <div className="text-2xl font-bold">Launch time!</div>;
     }

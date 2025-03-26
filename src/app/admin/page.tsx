@@ -1,12 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Subscriber {
   id: number;
   email: string;
   createdAt: string;
+}
+
+interface ApiResponse<T> {
+  success?: boolean;
+  error?: string;
+  data?: T;
 }
 
 export default function AdminPage() {
@@ -22,7 +28,7 @@ export default function AdminPage() {
         if (!response.ok) {
           router.push('/admin/login');
         }
-      } catch (err) {
+      } catch {
         router.push('/admin/login');
       }
     };
@@ -34,13 +40,19 @@ export default function AdminPage() {
     const fetchSubscribers = async () => {
       try {
         const response = await fetch('/api/admin/subscribers');
+        const data = await response.json() as ApiResponse<Subscriber[]>;
+
         if (!response.ok) {
-          throw new Error('Failed to fetch subscribers');
+          throw new Error(data.error || 'Failed to fetch subscribers');
         }
-        const data = await response.json();
-        setSubscribers(data);
-      } catch (err: any) {
-        setError(err.message);
+
+        setSubscribers(data.data || []);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError('Failed to fetch subscribers');
+        }
       } finally {
         setIsLoading(false);
       }
@@ -56,43 +68,61 @@ export default function AdminPage() {
       const response = await fetch(`/api/admin/subscribers/${id}`, {
         method: 'DELETE',
       });
+      const data = await response.json() as ApiResponse<void>;
 
       if (!response.ok) {
-        throw new Error('Failed to delete subscriber');
+        throw new Error(data.error || 'Failed to delete subscriber');
       }
 
       setSubscribers(subscribers.filter((sub) => sub.id !== id));
-    } catch (err: any) {
-      setError(err.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('Failed to delete subscriber');
+      }
     }
   };
 
-  if (isLoading) return <div className="p-8">Loading...</div>;
-  if (error) return <div className="p-8 text-red-500">{error}</div>;
+  if (isLoading) {
+    return <div className="text-center p-4">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-center p-4">{error}</div>;
+  }
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-8">Email Subscribers</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Subscribers</h1>
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200">
+        <table className="min-w-full bg-white">
           <thead>
             <tr>
-              <th className="px-6 py-3 border-b text-left">Email</th>
-              <th className="px-6 py-3 border-b text-left">Date</th>
-              <th className="px-6 py-3 border-b text-left">Actions</th>
+              <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Email
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Date
+              </th>
+              <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {subscribers.map((subscriber) => (
-              <tr key={subscriber.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 border-b">{subscriber.email}</td>
-                <td className="px-6 py-4 border-b">
+              <tr key={subscriber.id}>
+                <td className="px-6 py-4 whitespace-nowrap border-b border-gray-200">
+                  {subscriber.email}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap border-b border-gray-200">
                   {new Date(subscriber.createdAt).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4 border-b">
+                <td className="px-6 py-4 whitespace-nowrap border-b border-gray-200">
                   <button
                     onClick={() => handleDelete(subscriber.id)}
-                    className="text-red-600 hover:text-red-800"
+                    className="text-red-600 hover:text-red-900"
                   >
                     Delete
                   </button>
