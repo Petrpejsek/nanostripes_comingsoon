@@ -15,6 +15,8 @@ const nextConfig = {
   swcMinify: true,
   poweredByHeader: false,
   reactStrictMode: false,
+  output: 'standalone',
+  trailingSlash: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },

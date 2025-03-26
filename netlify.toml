@@ -4,10 +4,32 @@
 
 [build.environment]
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
-  DISABLE_ESLINT_PLUGIN = "true"
-  NEXT_DISABLE_ESLINT = "1"
-  NEXT_DISABLE_TYPESCRIPT = "1"
-  CI = "false"
+  NEXT_TELEMETRY_DISABLED = "1"
 
 [[plugins]]
-  package = "@netlify/plugin-nextjs" 
+  package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  from = "/*"
+  to = "/_next/static/:splat"
+  status = 200
+  force = true
+  conditions = {Path = ["/_next/static/**"]}
+
+[[redirects]]
+  from = "/*"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/next_server"
+  status = 200
+
+[functions]
+  external_node_modules = ["@prisma/client", "prisma"]
+  included_files = ["prisma/**"]
+
+[dev]
+  framework = "next"
+  targetPort = 3000 
