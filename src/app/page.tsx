@@ -12,16 +12,6 @@ interface CountdownProps {
   completed: boolean;
 }
 
-interface ApiResponse {
-  success: boolean;
-  error?: string;
-  subscriber?: {
-    id: number;
-    email: string;
-    createdAt: string;
-  };
-}
-
 export default function Home() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -54,20 +44,14 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json() as ApiResponse;
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Something went wrong');
+      // Místo volání API jen uložíme email do localStorage
+      const emails = JSON.parse(localStorage.getItem('subscribedEmails') || '[]');
+      if (emails.includes(email)) {
+        throw new Error('Email je již zaregistrován');
       }
-
+      emails.push(email);
+      localStorage.setItem('subscribedEmails', JSON.stringify(emails));
+      
       setSubmitted(true);
       setEmail('');
     } catch (error) {
@@ -75,7 +59,7 @@ export default function Home() {
         setError(error.message);
       } else {
         console.error('Subscribe form error:', error);
-        setError('An unexpected error occurred');
+        setError('Došlo k neočekávané chybě');
       }
     } finally {
       setIsLoading(false);
