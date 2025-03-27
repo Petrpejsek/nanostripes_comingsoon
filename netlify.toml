@@ -1,1 +1,36 @@
- 
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  from = "/*"
+  to = "/_next/static/:splat"
+  status = 200
+  force = true
+  conditions = {Path = ["/_next/static/**"]}
+
+[[redirects]]
+  from = "/*"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
+
+[functions]
+  external_node_modules = ["@prisma/client", "prisma"]
+  included_files = ["prisma/**"]
+  node_bundler = "esbuild"
+
+[dev]
+  framework = "next"
+  targetPort = 3000 
