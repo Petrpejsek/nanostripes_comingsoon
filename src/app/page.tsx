@@ -22,10 +22,13 @@ export default function Home() {
   useEffect(() => {
     const savedDate = localStorage.getItem('launchDate');
     if (savedDate) {
-      setLaunchDate(new Date(savedDate));
+      const date = new Date(savedDate);
+      date.setDate(date.getDate() + 20);
+      localStorage.setItem('launchDate', date.toISOString());
+      setLaunchDate(date);
     } else {
       const newDate = new Date();
-      newDate.setDate(newDate.getDate() + 30);
+      newDate.setDate(newDate.getDate() + 50);
       localStorage.setItem('launchDate', newDate.toISOString());
       setLaunchDate(newDate);
     }
